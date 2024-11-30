@@ -53,7 +53,7 @@ roleDefaults.adminGrants = [
 
 settingsDefaults.roleDefaults = roleDefaults
 
-function rolesDefault (callback) {
+function rolesDefault(callback) {
   const roleSchema = require('../models/role')
 
   async.series(
@@ -153,7 +153,7 @@ function rolesDefault (callback) {
   )
 }
 
-function defaultUserRole (callback) {
+function defaultUserRole(callback) {
   var roleOrderSchema = require('../models/roleorder')
   roleOrderSchema.getOrderLean(function (err, roleOrder) {
     if (err) return callback(err)
@@ -175,7 +175,7 @@ function defaultUserRole (callback) {
   })
 }
 
-function createDirectories (callback) {
+function createDirectories(callback) {
   async.parallel(
     [
       function (done) {
@@ -189,8 +189,9 @@ function createDirectories (callback) {
   )
 }
 
-function downloadWin32MongoDBTools (callback) {
+function downloadWin32MongoDBTools(callback) {
   var http = require('http')
+  var https = require('https')
   var os = require('os')
   var semver = require('semver')
   var dbVersion = require('../database').db.version || '5.0.6'
@@ -198,7 +199,7 @@ function downloadWin32MongoDBTools (callback) {
 
   if (os.platform() === 'win32') {
     winston.debug('MongoDB version ' + fileVersion + ' detected.')
-    var filename = 'mongodb-tools.' + fileVersion + '-win32x64.zip'
+    var filename = 'mongodb-tools.latest-winx86_x64.zip'
     var savePath = path.join(__dirname, '../backup/bin/win32/')
     fs.ensureDirSync(savePath)
     if (
@@ -211,8 +212,8 @@ function downloadWin32MongoDBTools (callback) {
       fs.emptyDirSync(savePath)
       var unzipper = require('unzipper')
       var file = fs.createWriteStream(path.join(savePath, filename))
-      http
-        .get('http://storage.trudesk.io/tools/' + filename, function (response) {
+      https
+        .get('https://fastdl.mongodb.org/tools/db/mongodb-database-tools-windows-x86_64-100.10.0.zip', function (response) {
           response.pipe(file)
           file.on('finish', function () {
             file.close()
@@ -221,7 +222,36 @@ function downloadWin32MongoDBTools (callback) {
             fs.createReadStream(path.join(savePath, filename))
               .pipe(unzipper.Extract({ path: savePath }))
               .on('close', function () {
-                fs.unlink(path.join(savePath, filename), callback)
+                const items = fs.readdirSync(savePath)
+
+                const mongodbFolder = items.find(
+                  (item) =>
+                    fs.lstatSync(path.join(savePath, item)).isDirectory() &&
+                    item.toLowerCase().includes('mongodb')
+                )
+
+                if (mongodbFolder) {
+                  const renamedFolder = path.join(savePath, filename.replace('.zip', ''))
+
+                  fs.renameSync(path.join(savePath, mongodbFolder), renamedFolder)
+
+                  fs.renameSync(
+                    path.join(renamedFolder, 'bin', 'mongodump.exe'),
+                    path.join(savePath, 'mongodump.exe')
+                  )
+                  fs.renameSync(
+                    path.join(renamedFolder, 'bin', 'mongorestore.exe'),
+                    path.join(savePath, 'mongorestore.exe')
+                  )
+
+                  fs.rmSync(renamedFolder, { recursive: true, force: true })
+                } else {
+                  winston.debug('No folder containing "mongodb" was found')
+                  return callback()
+                }
+
+                fs.unlinkSync(path.join(savePath, filename))
+                return callback()
               })
           })
         })
@@ -238,7 +268,7 @@ function downloadWin32MongoDBTools (callback) {
   }
 }
 
-function timezoneDefault (callback) {
+function timezoneDefault(callback) {
   SettingsSchema.getSettingByName('gen:timezone', function (err, setting) {
     if (err) {
       winston.warn(err)
@@ -276,7 +306,7 @@ function timezoneDefault (callback) {
   })
 }
 
-function showTourSettingDefault (callback) {
+function showTourSettingDefault(callback) {
   SettingsSchema.getSettingByName('showTour:enable', function (err, setting) {
     if (err) {
       winston.warn(err)
@@ -302,7 +332,7 @@ function showTourSettingDefault (callback) {
   })
 }
 
-function ticketTypeSettingDefault (callback) {
+function ticketTypeSettingDefault(callback) {
   SettingsSchema.getSettingByName('ticket:type:default', function (err, setting) {
     if (err) {
       winston.warn(err)
@@ -359,8 +389,8 @@ function ticketTypeSettingDefault (callback) {
  */
 function ticketStatusSettingDefault(callback) {
   const statusSettingName = 'ticket:status:default'
-  callback = _.isFunction(callback) ? callback : () => {}
-  SettingsSchema.getSettingByName(statusSettingName, function(err, setting) { 
+  callback = _.isFunction(callback) ? callback : () => { }
+  SettingsSchema.getSettingByName(statusSettingName, function (err, setting) {
     if (err) {
       winston.warn(err)
       return callback(err)
@@ -371,7 +401,7 @@ function ticketStatusSettingDefault(callback) {
     }
 
     const ticketStatusSchema = require('../models/ticketStatus')
-    ticketStatusSchema.getStatus(function(err, statuses) {
+    ticketStatusSchema.getStatus(function (err, statuses) {
       if (err) {
         winston.warn(err)
         return callback(err)
@@ -391,10 +421,10 @@ function ticketStatusSettingDefault(callback) {
         value: status._id
       })
 
-      defaultTicketStatus.save(function(err) {
+      defaultTicketStatus.save(function (err) {
         if (err) {
           winston.warn(err)
-            return callback(err)
+          return callback(err)
         }
         return callback()
       })
@@ -402,7 +432,7 @@ function ticketStatusSettingDefault(callback) {
   })
 }
 
-function ticketPriorityDefaults (callback) {
+function ticketPriorityDefaults(callback) {
   var priorities = []
 
   var normal = new PrioritySchema({
@@ -443,7 +473,7 @@ function ticketPriorityDefaults (callback) {
   )
 }
 
-function normalizeTags (callback) {
+function normalizeTags(callback) {
   var tagSchema = require('../models/tag')
   tagSchema.find({}, function (err, tags) {
     if (err) return callback(err)
@@ -457,7 +487,7 @@ function normalizeTags (callback) {
   })
 }
 
-function checkPriorities (callback) {
+function checkPriorities(callback) {
   var ticketSchema = require('../models/ticket')
   var migrateP1 = false
   var migrateP2 = false
@@ -563,7 +593,7 @@ function checkPriorities (callback) {
   )
 }
 
-function addedDefaultPrioritiesToTicketTypes (callback) {
+function addedDefaultPrioritiesToTicketTypes(callback) {
   async.waterfall(
     [
       function (next) {
@@ -606,7 +636,7 @@ function addedDefaultPrioritiesToTicketTypes (callback) {
   )
 }
 
-function mailTemplates (callback) {
+function mailTemplates(callback) {
   var newTicket = require('./json/mailer-new-ticket')
   var passwordReset = require('./json/mailer-password-reset')
   var templateSchema = require('../models/template')
@@ -637,7 +667,7 @@ function mailTemplates (callback) {
   )
 }
 
-function elasticSearchConfToDB (callback) {
+function elasticSearchConfToDB(callback) {
   const nconf = require('nconf')
   const elasticsearch = {
     enable: nconf.get('elasticsearch:enable') || false,
@@ -702,7 +732,7 @@ function elasticSearchConfToDB (callback) {
   )
 }
 
-function installationID (callback) {
+function installationID(callback) {
   const Chance = require('chance')
   const chance = new Chance()
   SettingsSchema.getSettingByName('gen:installid', function (err, setting) {
@@ -721,7 +751,7 @@ function installationID (callback) {
   })
 }
 
-function maintenanceModeDefault (callback) {
+function maintenanceModeDefault(callback) {
   SettingsSchema.getSettingByName('maintenanceMode:enable', function (err, setting) {
     if (err) return callback(err)
     if (!setting) {

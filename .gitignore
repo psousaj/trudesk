@@ -1,6 +1,9 @@
 # Logs
 *.log
 
+#VSscode
+.vscode
+
 # Yarn Cache
 .yarn/cache
 .yarn/*.gz
