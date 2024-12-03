@@ -1,0 +1,52 @@
+{
+    "dashboard": {
+        "lastUpdated": "Última Atualização",
+        "filterDays": {
+            "30": "Últimos 30 dias",
+            "60": "Últimos 60 dias",
+            "90": "Últimos 90 dias",
+            "180": "Últimos 180 dias",
+            "365": "Últimos 365 dias"
+        },
+        "cacheStillLoading": "Cache Carregando...",
+        "totalTickets": {
+            "title": "Total de Tickets",
+            "lastDays": "ultimos {{days}} dias"
+        },
+        "ticketsCompleted": "Tickets Completados",
+        "avgResponseTime": {
+            "title": "Tempo Médio de Resposta",
+            "hours": "horas"
+        },
+        "ticketBreakdown": {
+            "title": "Detalhamento de Tickets"
+        },
+        "topStats": {
+            "groups": "Top 5 Grupos",
+            "tags": "Top 10 Tags"
+        },
+        "overdueTickets": {
+            "title": "Tickets Vencidos",
+            "ticketId": "Ticket",
+            "status": "Status",
+            "subject": "Assunto",
+            "lastUpdated": "Última Atualização"
+        },
+        "quickStats": {
+            "title": "Estatísticas Rápidas (Últimos 365 Dias)",
+            "stat": "Estatística",
+            "value": "Valor",
+            "mostTicketsBy": "Mais Tickets por",
+            "mostCommentsBy": "Mais Comentários por",
+            "mostAssignedSupportUser": "Usuário de Suporte mais designado",
+            "mostActiveTicket": "Ticket mais ativo"
+        }
+    },
+    "sideBar": {
+        "tickets": {
+            "active": "Ativos",
+            "assigned": "Atribuídos",
+            "unassigned": "Não Atribuídos"
+        }
+    }
+}
