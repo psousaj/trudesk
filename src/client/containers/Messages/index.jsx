@@ -34,6 +34,7 @@ import { startConversation } from 'lib2/chat'
 import UIKit from 'uikit'
 import $ from 'jquery'
 import helpers from 'lib/helpers'
+import { withTranslation } from 'react-i18next'
 
 @observer
 class MessagesContainer extends React.Component {
@@ -48,7 +49,7 @@ class MessagesContainer extends React.Component {
   userTypingBubbles = createRef()
   messagesContainer = createRef()
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     makeObservable(this)
@@ -60,7 +61,7 @@ class MessagesContainer extends React.Component {
     this._stopTyping = this._stopTyping.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.fetchConversations()
 
     this.props.socket.on(MESSAGES_UI_USER_TYPING, this.onUserIsTyping)
@@ -79,7 +80,7 @@ class MessagesContainer extends React.Component {
     // }
   }
 
-  componentDidUpdate (prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     helpers.resizeAll()
     helpers.setupScrollers()
     this.setupContextMenu()
@@ -96,7 +97,7 @@ class MessagesContainer extends React.Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.props.unloadAccounts()
     this.props.unloadConversations()
     this.props.unloadSingleConversation()
@@ -105,7 +106,7 @@ class MessagesContainer extends React.Component {
     this.props.socket.off(MESSAGES_UI_RECEIVE, this.onReceiveMessage)
   }
 
-  onReceiveMessage (data) {
+  onReceiveMessage(data) {
     data.isOwner = data.message.owner._id.toString() === this.props.sessionUser._id.toString()
     this.props.receiveMessage(data)
 
@@ -121,7 +122,7 @@ class MessagesContainer extends React.Component {
     }
   }
 
-  onUserIsTyping (data) {
+  onUserIsTyping(data) {
     const typingTimerKey = `${data.cid}_${data.from}`
     if (this.typingTimers[typingTimerKey]) {
       clearTimeout(this.typingTimers[typingTimerKey])
@@ -139,7 +140,7 @@ class MessagesContainer extends React.Component {
     }
   }
 
-  _stopTyping (cid, from) {
+  _stopTyping(cid, from) {
     const typingTimerKey = `${cid}_${from}`
     this.typingTimers[typingTimerKey] = undefined
 
@@ -152,11 +153,11 @@ class MessagesContainer extends React.Component {
     }
   }
 
-  onUserStopTyping (data) {
+  onUserStopTyping(data) {
     console.log(data)
   }
 
-  showUserList (e) {
+  showUserList(e) {
     if (e) e.preventDefault()
     if (this.props.sessionUser.role.isAdmin || this.props.sessionUser.role.isAgent)
       this.props.fetchAccounts({ type: 'all', limit: -1 }).then(() => {
@@ -170,13 +171,13 @@ class MessagesContainer extends React.Component {
       })
   }
 
-  hideUserList (e) {
+  hideUserList(e) {
     if (e) e.preventDefault()
     this.props.unloadAccounts()
     this.userListShown = false
   }
 
-  onUserListSearchChange (e) {
+  onUserListSearchChange(e) {
     this.userListSearchText = e.target.value
     if (this.userListSearchText.length > 3) {
       this.mutableUserList = this.props.accountsState.accounts.filter(i =>
@@ -188,9 +189,9 @@ class MessagesContainer extends React.Component {
     } else this.mutableUserList = this.props.accountsState.accounts
   }
 
-  onUserStartConversationClick (account) {
+  onUserStartConversationClick(account) {
     if (!account || !this.props.sessionUser) {
-      helpers.UI.showSnackbar('Invalid participants', true)
+      helpers.UI.showSnackbar(t('messages.conversation.invalidParticipants'), true)
       return false
     }
 
@@ -215,7 +216,7 @@ class MessagesContainer extends React.Component {
       })
   }
 
-  setupContextMenu () {
+  setupContextMenu() {
     const self = this
     // Setup Context Menu
     helpers.setupContextMenu('#conversationList > ul > li', function (action, target) {
@@ -226,15 +227,15 @@ class MessagesContainer extends React.Component {
       const convoId = $li.attr('data-conversation-id')
       if (action.toLowerCase() === 'delete') {
         UIKit.modal.confirm(
-          'Are you sure you want to delete this conversation?',
+          t('messages.conversation.delete.confirmation'),
           function () {
             // Confirm
             self.deleteConversation(convoId)
           },
           // Cancel Function
-          function () {},
+          function () { },
           {
-            labels: { Ok: 'YES' },
+            labels: { Ok: t('messages.conversation.delete.yes') },
             confirmButtonClass: 'md-btn-danger'
           }
         )
@@ -242,18 +243,18 @@ class MessagesContainer extends React.Component {
     })
   }
 
-  deleteConversation (convoId) {
+  deleteConversation(convoId) {
     this.props.deleteConversation({ convoId })
   }
 
-  scrollToMessagesBottom (hideLoader) {
+  scrollToMessagesBottom(hideLoader) {
     setTimeout(() => {
       if (this.messagesContainer.current) helpers.scrollToBottom($(this.messagesContainer.current), false)
       if (hideLoader) this.singleConversationLoaded = true
     }, 100)
   }
 
-  onConversationClicked (id) {
+  onConversationClicked(id) {
     if (
       this.props.messagesState.currentConversation &&
       this.props.messagesState.currentConversation.get('_id').toString() === id.toString()
@@ -270,13 +271,13 @@ class MessagesContainer extends React.Component {
     })
   }
 
-  onSendMessageKeyDown (e, cid, to) {
+  onSendMessageKeyDown(e, cid, to) {
     if (e.code !== 'Enter' || e.code !== 'NumpadEnter') {
       this.props.socket.emit(MESSAGES_USER_TYPING, { cid, to, from: this.props.sessionUser._id })
     }
   }
 
-  onSendMessageSubmit (e, cId, to) {
+  onSendMessageSubmit(e, cId, to) {
     e.preventDefault()
     if (!cId || !to) return
 
@@ -301,15 +302,16 @@ class MessagesContainer extends React.Component {
     }
   }
 
-  render () {
+  render() {
     const { currentConversation } = this.props.messagesState
+    const { t } = this.props
 
     return (
       <div>
         <Grid>
           <GridItem width={'3-10'} extraClass={'full-height'}>
             <PageTitle
-              title={'Conversations'}
+              title={t('messages.title')}
               extraClasses={'page-title-border-right'}
               hideBorderBottom={true}
               rightComponent={
@@ -317,7 +319,7 @@ class MessagesContainer extends React.Component {
                   <div id='convo-actions' style={{ position: 'absolute', top: 20, right: 15 }}>
                     {!this.userListShown && (
                       <a
-                        title='Start Conversation'
+                        title={t('messages.startConversation')}
                         className='no-ajaxy'
                         style={{ display: 'block', height: 28 }}
                         onClick={e => this.showUserList(e)}
@@ -333,7 +335,7 @@ class MessagesContainer extends React.Component {
                         style={{ height: 28, lineHeight: '30px', fontSize: '16px', fontWeight: 300 }}
                         onClick={e => this.hideUserList(e)}
                       >
-                        Cancel
+                        {t('messages.cancelCreateConversation')}
                       </a>
                     )}
                   </div>
@@ -377,7 +379,7 @@ class MessagesContainer extends React.Component {
                 <div className='search-box'>
                   <input
                     type='text'
-                    placeholder={'Search'}
+                    placeholder={t('messages.conversation.search')}
                     value={this.userListSearchText}
                     onChange={e => this.onUserListSearchChange(e)}
                   />
@@ -413,11 +415,11 @@ class MessagesContainer extends React.Component {
                 style={{ marginBottom: '41px !important' }}
               >
                 <span className={'conversation-start'}>
-                  Conversation Started on {helpers.formatDate(currentConversation.get('createdAt'), helpers.getLongDateWithTimeFormat())}
+                  {t('messages.conversation.started')} {helpers.formatDate(currentConversation.get('createdAt'), helpers.getLongDateWithTimeFormat())}
                 </span>
                 {currentConversation.get('requestingUserMeta').get('deletedAt') && (
                   <span className={'conversation-deleted'}>
-                    Conversation Deleted at {helpers.formatDate(currentConversation.get('requestingUserMeta').get('deletedAt'), helpers.getLongDateWithTimeFormat())}
+                    {t('messages.conversation.deleted')} {helpers.formatDate(currentConversation.get('requestingUserMeta').get('deletedAt'), helpers.getLongDateWithTimeFormat())}
                   </span>
                 )}
                 <div ref={this.conversationScrollSpy} className={clsx('uk-text-center', 'uk-hidden')}>
@@ -497,7 +499,7 @@ class MessagesContainer extends React.Component {
                   <input
                     type='text'
                     name={'chatMessage'}
-                    placeholder={'Type your message...'}
+                    placeholder={t('messages.conversation.typeMessage')}
                     onKeyDown={e =>
                       this.onSendMessageKeyDown(
                         e,
@@ -506,7 +508,7 @@ class MessagesContainer extends React.Component {
                       )
                     }
                   />
-                  <button type={'submit'}>SEND</button>
+                  <button type={'submit'}>{t('messages.conversation.send')}</button>
                 </form>
               </div>
             </GridItem>
@@ -514,7 +516,7 @@ class MessagesContainer extends React.Component {
         </Grid>
         <ul className='context-menu'>
           <li data-action={'delete'} style={{ color: '#d32f2f' }}>
-            Delete Conversation
+            {t('messages.conversation.delete.title')}
           </li>
         </ul>
       </div>
@@ -559,4 +561,4 @@ export default connect(mapStateToProps, {
   unloadSingleConversation,
   sendMessage,
   receiveMessage
-})(MessagesContainer)
+})(withTranslation()(MessagesContainer))

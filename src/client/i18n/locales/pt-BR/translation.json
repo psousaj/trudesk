@@ -60,6 +60,24 @@
             "dueDate": "Prazo"
         }
     },
+    "messages": {
+        "title": "Conversas",
+        "startConversation": "Iniciar Conversa",
+        "cancelCreateConversation": "Cancelar",
+        "conversation": {
+            "started": "Conversa Iniciada em",
+            "deleted": "Conversa Deletada em",
+            "typeMessage": "Digite sua mensagem...",
+            "send": "Enviar",
+            "search": "Pesquisar",
+            "delete": {
+                "title": "Deletar Conversa",
+                "confirmation": "Tem certeza que deseja deletar esta conversa?",
+                "yes": "Sim"
+            },
+            "invalidParticipants": "Participantes inválidos"
+        }
+    },
     "sideBar": {
         "tickets": {
             "active": "Ativos",
