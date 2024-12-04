@@ -118,6 +118,29 @@
             "no": "Cancelar"
         }
     },
+    "teams": {
+        "title": "Equipes",
+        "create": "Adicionar",
+        "table": {
+            "name": "Nome",
+            "teamMembers": "Membros",
+            "teamActions": {
+                "title": "Ações",
+                "edit": "Editar",
+                "delete": "Deletar"
+            },
+            "noTeams": "Nenhuma Equipe"
+        },
+        "deleteTeam": {
+            "warnings": {
+                "confirmation": "Tem certeza?",
+                "principal": "Esta é uma ação permanente.",
+                "agents": "Agentes podem perder acesso a recursos após a exclusão desta equipe."
+            },
+            "yes": "Sim",
+            "no": "Cancelar"
+        }
+    },
     "sidebar": {
         "tickets": {
             "active": "Ativos",

@@ -31,30 +31,31 @@ import TableRow from 'components/Table/TableRow'
 import TableCell from 'components/Table/TableCell'
 import TableHeader from 'components/Table/TableHeader'
 import ButtonGroup from 'components/ButtonGroup'
+import { withTranslation } from 'react-i18next'
 
 class TeamsContainer extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.fetchTeams({ page: 0, limit: 1000 })
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     helpers.resizeFullHeight()
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.props.unloadTeams()
   }
 
-  onCreateTeamClick (e) {
+  onCreateTeamClick(e) {
     e.preventDefault()
     this.props.showModal('CREATE_TEAM')
   }
 
-  onEditTeamClick (team) {
+  onEditTeamClick(team) {
     if (team.members) {
       team.members = team.members.map(m => {
         return m._id
@@ -66,27 +67,28 @@ class TeamsContainer extends React.Component {
     this.props.showModal('EDIT_TEAM', { team })
   }
 
-  onDeleteTeamClick (_id) {
+  onDeleteTeamClick(_id, warnings, labels) {
     UIKit.modal.confirm(
-      `<h2>Are you sure?</h2>
+      `<h2>${warnings.confirmation}</h2>
         <p style="font-size: 15px;">
-            <span class="uk-text-danger" style="font-size: 15px;">This is a permanent action.</span> 
+            <span class="uk-text-danger" style="font-size: 15px;">${warnings.principal}.</span> 
         </p>
         <p style="font-size: 12px;">
-            Agents may lose access to resources once this team is deleted.
+            ${warnings.agents}
         </p>
         `,
       () => {
         this.props.deleteTeam({ _id })
       },
       {
-        labels: { Ok: 'Yes', Cancel: 'No' },
+        labels: { Ok: labels.yes, Cancel: labels.no },
         confirmButtonClass: 'md-btn-danger'
       }
     )
   }
 
-  render () {
+  render() {
+    const { t } = this.props
     const tableItems = this.props.teamsState.teams.map(team => {
       return (
         <TableRow key={team.get('_id')} className={'vam nbb'}>
@@ -116,15 +118,26 @@ class TeamsContainer extends React.Component {
           <TableCell style={{ textAlign: 'right', paddingRight: 15 }}>
             <ButtonGroup>
               {helpers.canUser('teams:update', true) && (
-                <Button text={'Edit'} small={true} waves={true} onClick={() => this.onEditTeamClick(team.toJS())} />
+                <Button text={t('teams.table.teamActions.edit')} small={true} waves={true} onClick={() => this.onEditTeamClick(team.toJS())} />
               )}
               {helpers.canUser('teams:delete', true) && (
                 <Button
-                  text={'Delete'}
+                  text={t('teams.table.teamActions.delete')}
                   style={'danger'}
                   small={true}
                   waves={true}
-                  onClick={() => this.onDeleteTeamClick(team.get('_id'))}
+                  onClick={() => this.onDeleteTeamClick(
+                    team.get('_id'),
+                    {
+                      confirmation: t('teams.deleteTeam.warnings.confirmation'),
+                      principal: t('teams.deleteTeam.warnings.principal'),
+                      agents: t('teams.deleteTeam.warnings.agents'),
+                    },
+                    {
+                      yes: t('teams.deleteTeam.yes'),
+                      no: t('teams.deleteTeam.no')
+                    }
+                  )}
                 />
               )}
             </ButtonGroup>
@@ -136,13 +149,13 @@ class TeamsContainer extends React.Component {
     return (
       <div>
         <PageTitle
-          title={'Teams'}
+          title={t('teams.title')}
           shadow={true}
           rightComponent={
             <div className={'uk-grid uk-grid-collapse'}>
               <div className={'uk-width-1-1 mt-15 uk-text-right'}>
                 <Button
-                  text={'Create'}
+                  text={t('teams.create')}
                   flat={false}
                   small={true}
                   waves={false}
@@ -156,15 +169,15 @@ class TeamsContainer extends React.Component {
         <PageContent id={'teams-page-content'} padding={0} paddingBottom={0}>
           <Table
             headers={[
-              <TableHeader key={0} width={'25%'} height={40} text={'Name'} padding={'8px 8px 8px 15px'} />,
-              <TableHeader key={1} width={'50%'} text={'Team Members'} />,
-              <TableHeader key={2} width={130} text={'Team Actions'} />
+              <TableHeader key={0} width={'25%'} height={40} text={t('teams.table.name')} padding={'8px 8px 8px 15px'} />,
+              <TableHeader key={1} width={'50%'} text={t('teams.table.teamMembers')} />,
+              <TableHeader key={2} width={130} text={t('teams.table.teamActions.title')} />
             ]}
           >
             {this.props.teamsState.teams.size < 1 && (
               <TableRow>
                 <TableCell colSpan={3}>
-                  <h5 style={{ paddingLeft: 8 }}>No Teams</h5>
+                  <h5 style={{ paddingLeft: 8 }}>{t('teams.table.noTeams')}</h5>
                 </TableCell>
               </TableRow>
             )}
@@ -188,4 +201,4 @@ const mapStateToProps = state => ({
   teamsState: state.teamsState
 })
 
-export default connect(mapStateToProps, { fetchTeams, unloadTeams, deleteTeam, showModal })(TeamsContainer)
+export default connect(mapStateToProps, { fetchTeams, unloadTeams, deleteTeam, showModal })(withTranslation()(TeamsContainer))
