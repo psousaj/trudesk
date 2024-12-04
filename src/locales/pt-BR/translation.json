@@ -95,6 +95,29 @@
             "departments": "Departamentos"
         }
     },
+    "groups": {
+        "title": "Grupos de Usuários",
+        "create": "Adicionar",
+        "table": {
+            "name": "Nome",
+            "groupMembers": "Membros",
+            "groupActions": {
+                "title": "Ações",
+                "edit": "Editar",
+                "delete": "Deletar"
+            }
+        },
+        "deleteGroup": {
+            "warnings": {
+                "confirmation": "Tem certeza?",
+                "principal": "Esta é uma ação permanente.",
+                "agents": "Agentes podem perder acesso a recursos após a exclusão deste grupo.",
+                "tickets": "Grupos associados a tickets não podem ser deletados."
+            },
+            "yes": "Sim",
+            "no": "Cancelar"
+        }
+    },
     "sidebar": {
         "tickets": {
             "active": "Ativos",
@@ -113,6 +136,19 @@
         "pagination": {
             "prevPageTitle": "Página Anterior",
             "nextPageTitle": "Página Seguinte"
+        },
+        "modals": {
+            "editGroup": {
+                "title": "Editar Grupo",
+                "group": {
+                    "title": "Grupo",
+                    "dataValidationError": "Por favor, insira um nome de grupo válido. (Deve conter 2 caracteres)"
+                },
+                "groupMembers": "Membros",
+                "sendNotificationsTo": "Enviar Notificações Para",
+                "close": "Fechar",
+                "save": "Salvar"
+            }
         }
     }
 }
