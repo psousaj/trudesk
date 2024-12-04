@@ -23,13 +23,14 @@ import SubmenuItem from 'components/Nav/SubmenuItem'
 import { updateNavChange } from 'actions/nav'
 
 import Helpers from 'lib/helpers'
+import { withTranslation } from 'react-i18next'
 
 class Sidebar extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     // Helpers.UI.getPlugins((err, result) => {
     //   if (!err && result.plugins) {
     //     this.setState({ plugins: result.plugins })
@@ -41,12 +42,12 @@ class Sidebar extends React.Component {
     this.props.updateNavChange({ activeItem: sidebarRoute, activeSubItem: sidebarSubRoute })
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     Helpers.UI.initSidebar()
     Helpers.UI.bindExpand()
   }
 
-  renderPlugins () {
+  renderPlugins() {
     const { plugins, sessionUser, activeItem, activeSubItem } = this.state
     return (
       <SidebarItem
@@ -79,8 +80,9 @@ class Sidebar extends React.Component {
     )
   }
 
-  render () {
+  render() {
     const { activeItem, activeSubItem, sessionUser } = this.props
+    const { t } = this.props
 
     return (
       <div
@@ -111,19 +113,19 @@ class Sidebar extends React.Component {
               >
                 <Submenu id='tickets'>
                   <SubmenuItem
-                    text='Active'
+                    text={t('sidebar.tickets.active')}
                     icon='timer'
                     href='/tickets/active'
                     active={activeSubItem === 'tickets-active'}
                   />
                   <SubmenuItem
-                    text='Assigned'
+                    text={t('sidebar.tickets.assigned')}
                     icon='assignment_ind'
                     href='/tickets/assigned'
                     active={activeSubItem === 'tickets-assigned'}
                   />
                   <SubmenuItem
-                    text='Unassigned'
+                    text={t('sidebar.tickets.unassigned')}
                     icon='person_add_disabled'
                     href='/tickets/unassigned'
                     active={activeSubItem === 'tickets-unassigned'}
@@ -140,7 +142,7 @@ class Sidebar extends React.Component {
             />
             {sessionUser && Helpers.canUser('accounts:view') && (
               <SidebarItem
-                text='Accounts'
+                text={t('sidebar.accounts.title')}
                 icon='&#xE7FD;'
                 href='/accounts'
                 class='navAccounts'
@@ -152,14 +154,14 @@ class Sidebar extends React.Component {
                   <Submenu id='accounts'>
                     <SubmenuItem
                       href={'/accounts/customers'}
-                      text={'Customers'}
+                      text={t('sidebar.accounts.customers')}
                       icon={'account_box'}
                       active={activeSubItem === 'accounts-customers'}
                     />
                     {sessionUser && Helpers.canUser('agent:*', true) && (
                       <SubmenuItem
                         href={'/accounts/agents'}
-                        text={'Agents'}
+                        text={t('sidebar.accounts.agents')}
                         icon={'account_circle'}
                         active={activeSubItem === 'accounts-agents'}
                       />
@@ -167,7 +169,7 @@ class Sidebar extends React.Component {
                     {sessionUser && Helpers.canUser('admin:*') && (
                       <SubmenuItem
                         href={'/accounts/admins'}
-                        text={'Admins'}
+                        text={t('sidebar.accounts.admins')}
                         icon={'how_to_reg'}
                         active={activeSubItem === 'accounts-admins'}
                       />
@@ -357,4 +359,4 @@ const mapStateToProps = state => ({
   notice: state.shared.notice
 })
 
-export default connect(mapStateToProps, { updateNavChange })(Sidebar)
+export default connect(mapStateToProps, { updateNavChange })(withTranslation()(Sidebar))

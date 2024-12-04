@@ -20,12 +20,13 @@ const permissions = require('../permissions')
 const emitter = require('../emitter')
 const xss = require('xss')
 const path = require('path')
+const i18next = require('../i18n')
 
 const accountsController = {}
 
 accountsController.content = {}
 
-function handleError (res, err) {
+function handleError(res, err) {
   if (err) {
     return res.render('error', {
       layout: false,
@@ -70,7 +71,7 @@ accountsController.get = function (req, res) {
   }
 
   const content = {}
-  content.title = 'Accounts'
+  content.title = i18next.t('sidebar.accounts.title')
   content.nav = 'accounts'
 
   content.data = {}
@@ -87,7 +88,7 @@ accountsController.getCustomers = function (req, res) {
   }
 
   const content = {}
-  content.title = 'Customers'
+  content.title = i18next.t('sidebar.accounts.customers')
   content.nav = 'accounts'
   content.subnav = 'accounts-customers'
 
@@ -106,7 +107,7 @@ accountsController.getAgents = function (req, res) {
   }
 
   const content = {}
-  content.title = 'Agents'
+  content.title = i18next.t('sidebar.accounts.agents')
   content.nav = 'accounts'
   content.subnav = 'accounts-agents'
 
@@ -125,7 +126,7 @@ accountsController.getAdmins = function (req, res) {
   }
 
   const content = {}
-  content.title = 'Admins'
+  content.title = i18next.t('sidebar.accounts.admins')
   content.nav = 'accounts'
   content.subnav = 'accounts-admins'
 
@@ -263,7 +264,7 @@ accountsController.bindLdap = function (req, res) {
   })
 }
 
-function processUsers (addedUserArray, updatedUserArray, item, callback) {
+function processUsers(addedUserArray, updatedUserArray, item, callback) {
   userSchema.getUserByUsername(item.username, function (err, user) {
     if (err) return callback(err)
 

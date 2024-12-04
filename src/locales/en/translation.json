@@ -1,0 +1,12 @@
+{
+    "dashboard": {
+        "ticketsCompleted": "Tickets Completed"
+    },
+    "sideBar": {
+        "tickets": {
+            "active": "Active",
+            "assigned": "Assigned",
+            "unassigned": "Unassigned"
+        }
+    }
+}
