@@ -42,11 +42,36 @@
             "mostActiveTicket": "Ticket mais ativo"
         }
     },
+    "tickets": {
+        "create": "Criar",
+        "setStatus": "Definir",
+        "delete": "Deletar",
+        "searchBar": {
+            "placeHolder": "Pesquisar"
+        },
+        "table": {
+            "status": "Status",
+            "subject": "Assunto",
+            "created": "Criado",
+            "updated": "Atualizado",
+            "requester": "Solicitante",
+            "assignee": "Atribuído a",
+            "customer": "Cliente",
+            "dueDate": "Prazo"
+        }
+    },
     "sideBar": {
         "tickets": {
             "active": "Ativos",
             "assigned": "Atribuídos",
             "unassigned": "Não Atribuídos"
+        }
+    },
+    "components": {
+        "titlePaginationConnector": "de",
+        "pagination": {
+            "prevPageTitle": "Página Anterior",
+            "nextPageTitle": "Página Seguinte"
         }
     }
 }

@@ -48,13 +48,14 @@ import helpers from 'lib/helpers'
 import anime from 'animejs'
 import moment from 'moment-timezone'
 import SearchResults from 'components/SearchResults'
+import { withTranslation } from 'react-i18next'
 
 @observer
 class TicketsContainer extends React.Component {
   @observable searchTerm = ''
 
   selectedTickets = []
-  constructor (props) {
+  constructor(props) {
     super(props)
     makeObservable(this)
 
@@ -63,7 +64,7 @@ class TicketsContainer extends React.Component {
     this.onTicketDeleted = this.onTicketDeleted.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.socket.on('$trudesk:client:ticket:created', this.onTicketCreated)
     this.props.socket.on('$trudesk:client:ticket:updated', this.onTicketUpdated)
     this.props.socket.on('$trudesk:client:ticket:deleted', this.onTicketDeleted)
@@ -72,7 +73,7 @@ class TicketsContainer extends React.Component {
     this.props.fetchTicketStatus()
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     if (this.timeline) {
       this.timeline.pause()
       this.timeline.seek(0)
@@ -98,7 +99,7 @@ class TicketsContainer extends React.Component {
     this.timeline.play()
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     anime.remove('tr.overdue td')
     this.timeline = null
     this.props.unloadTickets()
@@ -107,26 +108,26 @@ class TicketsContainer extends React.Component {
     this.props.socket.off('$trudesk:client:ticket:deleted', this.onTicketDeleted)
   }
 
-  onTicketCreated (ticket) {
+  onTicketCreated(ticket) {
     if (this.props.page === '0') this.props.ticketEvent({ type: 'created', data: ticket })
   }
 
-  onTicketUpdated (data) {
+  onTicketUpdated(data) {
     this.props.ticketUpdated(data)
   }
 
-  onTicketDeleted (id) {
+  onTicketDeleted(id) {
     this.props.ticketEvent({ type: 'deleted', data: id })
   }
 
-  onTicketCheckChanged (e, id) {
+  onTicketCheckChanged(e, id) {
     if (e.target.checked) this.selectedTickets.push(id)
     else this.selectedTickets = without(this.selectedTickets, id)
 
     this.selectedTickets = uniq(this.selectedTickets)
   }
 
-  onSetStatus (status) {
+  onSetStatus(status) {
     const batch = this.selectedTickets.map(id => {
       return { id, status: status.get('_id') }
     })
@@ -148,7 +149,7 @@ class TicketsContainer extends React.Component {
       })
   }
 
-  onDeleteClicked () {
+  onDeleteClicked() {
     each(this.selectedTickets, id => {
       this.props.deleteTicket({ id })
     })
@@ -156,7 +157,7 @@ class TicketsContainer extends React.Component {
     this._clearChecked()
   }
 
-  onSearchTermChanged (e) {
+  onSearchTermChanged(e) {
     this.searchTerm = e.target.value
     if (this.searchTerm.length > 3) {
       SearchResults.toggleAnimation(true, true)
@@ -166,11 +167,11 @@ class TicketsContainer extends React.Component {
     }
   }
 
-  _onSearchFocus (e) {
+  _onSearchFocus(e) {
     if (this.searchTerm.length > 3) SearchResults.toggleAnimation(true, true)
   }
 
-  onSearchKeypress (e) {
+  onSearchKeypress(e) {
     if (this.searchTerm.length > 3) this.props.fetchSearchResults({ term: this.searchTerm })
 
     // e.persist()
@@ -181,7 +182,7 @@ class TicketsContainer extends React.Component {
     // }
   }
 
-  _selectAll () {
+  _selectAll() {
     this.selectedTickets = []
     const checkboxes = this.ticketsTable.querySelectorAll('td > input[type="checkbox"]')
     checkboxes.forEach(item => {
@@ -192,7 +193,7 @@ class TicketsContainer extends React.Component {
     this.selectedTickets = uniq(this.selectedTickets)
   }
 
-  _clearChecked () {
+  _clearChecked() {
     this.selectedTickets = []
     const checkboxes = this.ticketsTable.querySelectorAll('td > input[type="checkbox"]')
     checkboxes.forEach(item => {
@@ -202,12 +203,13 @@ class TicketsContainer extends React.Component {
     this.selectAllCheckbox.checked = false
   }
 
-  onSelectAll (e) {
+  onSelectAll(e) {
     if (e.target.checked) this._selectAll()
     else this._clearChecked()
   }
 
-  render () {
+  render() {
+    const { t } = this.props
     const loadingItems = []
     for (let i = 0; i < 51; i++) {
       const cells = []
@@ -278,19 +280,19 @@ class TicketsContainer extends React.Component {
                 />
                 <DropdownTrigger pos={'bottom-right'} offset={5} extraClass={'uk-float-left'}>
                   <PageTitleButton fontAwesomeIcon={'fa-tasks'} />
-                  <Dropdown small={true} width={120}>
-                    <DropdownItem text={'Create'} onClick={() => this.props.showModal('CREATE_TICKET')} />
+                  <Dropdown small={true} width={145}>
+                    <DropdownItem text={t('tickets.create')} onClick={() => this.props.showModal('CREATE_TICKET')} />
                     <DropdownSeparator />
                     {this.props.ticketStatuses.map(s => (
                       <DropdownItem
                         key={s.get('_id')}
-                        text={'Set ' + s.get('name')}
+                        text={t('tickets.setStatus') + ' ' + s.get('name')}
                         onClick={() => this.onSetStatus(s)}
                       />
                     ))}
                     {helpers.canUser('tickets:delete', true) && <DropdownSeparator />}
                     {helpers.canUser('tickets:delete', true) && (
-                      <DropdownItem text={'Delete'} extraClass={'text-danger'} onClick={() => this.onDeleteClicked()} />
+                      <DropdownItem text={t('tickets.delete')} extraClass={'text-danger'} onClick={() => this.onDeleteClicked()} />
                     )}
                   </Dropdown>
                 </DropdownTrigger>
@@ -303,7 +305,7 @@ class TicketsContainer extends React.Component {
                     <input
                       type='text'
                       id='tickets_Search'
-                      placeholder={'Search'}
+                      placeholder={t('tickets.searchBar.placeHolder')}
                       className={'ticket-top-search'}
                       value={this.searchTerm}
                       onChange={e => this.onSearchTermChanged(e)}
@@ -326,15 +328,15 @@ class TicketsContainer extends React.Component {
             striped={true}
             headers={[
               <TableHeader key={0} width={45} height={50} component={selectAllCheckbox} />,
-              <TableHeader key={1} width={60} text={'Status'} />,
+              <TableHeader key={1} width={60} text={t('tickets.table.status')} />,
               <TableHeader key={2} width={65} text={'#'} />,
-              <TableHeader key={3} width={'23%'} text={'Subject'} />,
-              <TableHeader key={4} width={110} text={'Created'} />,
-              <TableHeader key={5} width={125} text={'Requester'} />,
-              <TableHeader key={6} width={175} text={'Customer'} />,
-              <TableHeader key={7} text={'Assignee'} />,
-              <TableHeader key={8} width={110} text={'Due Date'} />,
-              <TableHeader key={9} text={'Updated'} />
+              <TableHeader key={3} width={'23%'} text={t('tickets.table.subject')} />,
+              <TableHeader key={4} width={110} text={t('tickets.table.created')} />,
+              <TableHeader key={5} width={125} text={t('tickets.table.requester')} />,
+              <TableHeader key={6} width={175} text={t('tickets.table.customer')} />,
+              <TableHeader key={7} text={t('tickets.table.assignee')} />,
+              <TableHeader key={8} width={110} text={t('tickets.table.dueDate')} />,
+              <TableHeader key={9} text={t('tickets.table.updated')} />
             ]}
           >
             {!this.props.loading && this.props.tickets.size < 1 && (
@@ -356,8 +358,8 @@ class TicketsContainer extends React.Component {
 
                 const updated = ticket.get('updated')
                   ? helpers.formatDate(ticket.get('updated'), helpers.getShortDateFormat()) +
-                    ', ' +
-                    helpers.formatDate(ticket.get('updated'), helpers.getTimeFormat())
+                  ', ' +
+                  helpers.formatDate(ticket.get('updated'), helpers.getTimeFormat())
                   : '--'
 
                 const dueDate = ticket.get('dueDate')
@@ -380,9 +382,8 @@ class TicketsContainer extends React.Component {
                 return (
                   <TableRow
                     key={ticket.get('_id')}
-                    className={`ticket-${status == null ? 'unknonwn' : status.get('name')} ${
-                      isOverdue() ? 'overdue' : ''
-                    }`}
+                    className={`ticket-${status == null ? 'unknonwn' : status.get('name')} ${isOverdue() ? 'overdue' : ''
+                      }`}
                     clickable={true}
                     onClick={e => {
                       const td = e.target.closest('td')
@@ -490,4 +491,4 @@ export default connect(mapStateToProps, {
   fetchSearchResults,
   showModal,
   fetchTicketStatus
-})(TicketsContainer)
+})(withTranslation()(TicketsContainer))

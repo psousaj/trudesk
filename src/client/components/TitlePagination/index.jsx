@@ -16,18 +16,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import $ from 'jquery'
+import { t } from 'i18next'
 
 class TitlePagination extends React.Component {
-  componentDidMount () {}
-  componentDidUpdate () {
+  componentDidMount() { }
+  componentDidUpdate() {
     $(this.parent).ajaxify()
   }
 
-  static formatNumber (num) {
+  static formatNumber(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 
-  static calcStartEnd (page, limit) {
+  static calcStartEnd(page, limit) {
     page = Number(page)
     limit = Number(limit)
     const start = page === 0 ? '1' : page * limit
@@ -36,7 +37,7 @@ class TitlePagination extends React.Component {
     return { start, end }
   }
 
-  render () {
+  render() {
     const { limit, total, prevEnabled, nextEnabled, currentPage, prevPage, nextPage, type, filter } = this.props
     const link = page => {
       if (!type) return '#'
@@ -52,14 +53,14 @@ class TitlePagination extends React.Component {
     return (
       <div className={'pagination uk-float-left uk-clearfix'} ref={r => (this.parent = r)}>
         <span className={'pagination-info'}>
-          {TitlePagination.formatNumber(startEnd.start)} - {TitlePagination.formatNumber(startEnd.end)} of{' '}
+          {TitlePagination.formatNumber(startEnd.start)} - {TitlePagination.formatNumber(startEnd.end)} {t('components.titlePaginationConnector') + ' '}
           {TitlePagination.formatNumber(total)}
         </span>
         <ul className={'button-group'}>
           <li className='pagination'>
             <a
               href={prevEnabled ? link(prevPage) : '#'}
-              title={'Previous Page'}
+              title={t('components.pagination.prevPageTitle')}
               className={'btn md-btn-wave-light' + (!prevEnabled ? ' no-ajaxy' : '')}
             >
               <i className='fa fa-large fa-chevron-left' />
@@ -68,7 +69,7 @@ class TitlePagination extends React.Component {
           <li className='pagination'>
             <a
               href={nextEnabled ? link(nextPage) : '#'}
-              title={'Next Page'}
+              title={t('components.pagination.nextPageTitle')}
               className={'btn md-btn-wave-light' + (!nextEnabled ? ' no-ajaxy' : '')}
             >
               <i className='fa fa-large fa-chevron-right' />
