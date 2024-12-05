@@ -141,6 +141,32 @@
             "no": "Cancelar"
         }
     },
+    "departments": {
+        "title": "Departamentos",
+        "create": "Criar",
+        "table": {
+            "name": "Nome",
+            "teams": "Equipes",
+            "groups": "Grupos",
+            "allGroups": "Todos os Grupos",
+            "allPublicGroups": "Todos os Grupos Públicos",
+            "dpActions": {
+                "title": "Ações",
+                "edit": "Editar",
+                "delete": "Deletar"
+            },
+            "noDps": "Nenhuma Equipe"
+        },
+        "deleteDp": {
+            "warnings": {
+                "confirmation": "Tem certeza?",
+                "principal": "Esta é uma ação permanente.",
+                "agents": "Agentes podem perder acesso a recursos após a exclusão deste departamento."
+            },
+            "yes": "Sim",
+            "no": "Cancelar"
+        }
+    },
     "sidebar": {
         "tickets": {
             "active": "Ativos",
