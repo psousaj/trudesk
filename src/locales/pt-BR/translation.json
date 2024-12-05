@@ -167,6 +167,30 @@
             "no": "Cancelar"
         }
     },
+    "reports": {
+        "title": "Gerar Relatório",
+        "selectReport": "Selecione o Relatório",
+        "reportType": {
+            "ticketsByGroup": "Tickets por Grupos",
+            "ticketsByPriorities": "Tickets por Prioridade",
+            "ticketsByStatus": "Tickets por Status",
+            "ticketsByTags": "Tickets por Tags",
+            "ticketsByTypes": "Tickets por Tipo",
+            "ticketsByAssignee": "Tickets por Atribuição"
+        },
+        "nonSelectedReport": "Por favor, selecione um relatório",
+        "subReports": {
+            "instructions": "Por favor, selecione a data inicial, data final e os grupos para incluir no relatório.",
+            "startDate": "Data Inicial",
+            "endDate": "Data Final",
+            "groups": "Grupos",
+            "priorities": "Prioridades",
+            "tags": "Tags",
+            "types": "Tipos",
+            "assignee": "Atribuído a",
+            "generate": "Gerar"
+        }
+    },
     "sidebar": {
         "tickets": {
             "active": "Ativos",

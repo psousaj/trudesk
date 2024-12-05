@@ -15,6 +15,7 @@ import SpinLoader from 'components/SpinLoader'
 
 import moment from 'moment-timezone'
 import helpers from 'lib/helpers'
+import { useTranslation } from 'react-i18next'
 
 const ReportTicketsByAssignee = () => {
   const groupsState = useSelector(state => state.groupsState)
@@ -30,6 +31,8 @@ const ReportTicketsByAssignee = () => {
   const [endDate, setEndDate] = useState('')
   const [selectedGroups, setSelectedGroups] = useState([])
   const [selectedAssignee, setSelectedAssignee] = useState([])
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     helpers.UI.inputs()
@@ -97,7 +100,7 @@ const ReportTicketsByAssignee = () => {
         hover={false}
         header={
           <div style={{ padding: '10px 15px' }}>
-            <h4 style={{ width: '100%', textAlign: 'left', fontSize: '14px', margin: 0 }}>Tickets by Assignee</h4>
+            <h4 style={{ width: '100%', textAlign: 'left', fontSize: '14px', margin: 0 }}>{t('reports.reportType.ticketsByAssignee')}</h4>
           </div>
         }
         extraContentClass={'nopadding'}
@@ -105,7 +108,7 @@ const ReportTicketsByAssignee = () => {
           <div>
             <SpinLoader active={isLoading} />
             <p className='padding-15 nomargin uk-text-muted'>
-              Please select the start and end dates and which groups to include in the report.
+              {t('reports.subReports.instructions')}
             </p>
             <hr className='uk-margin-large-bottom' style={{ marginTop: 0 }} />
             <div className={'padding-15'}>
@@ -113,7 +116,7 @@ const ReportTicketsByAssignee = () => {
                 <Grid>
                   <GridItem width={'1-2'}>
                     <label htmlFor='filterDate_Start' className={'uk-form-label nopadding nomargin'}>
-                      Start Date
+                      {t('reports.subReports.startDate')}
                     </label>
                     <DatePicker
                       name={'filterDate_start'}
@@ -126,7 +129,7 @@ const ReportTicketsByAssignee = () => {
                   </GridItem>
                   <GridItem width={'1-2'}>
                     <label htmlFor='filterDate_End' className={'uk-form-label nopadding nomargin'}>
-                      End Date
+                      {t('reports.subReports.endDate')}
                     </label>
                     <DatePicker
                       name={'filterDate_End'}
@@ -140,7 +143,7 @@ const ReportTicketsByAssignee = () => {
                   <GridItem width={'1-1'}>
                     <div className='uk-margin-medium-top uk-margin-medium-bottom'>
                       <label htmlFor='groups' className={'uk-form-label'}>
-                        Groups
+                        {t('reports.subReports.groups')}
                       </label>
                       <SingleSelect
                         multiple={true}
@@ -154,7 +157,9 @@ const ReportTicketsByAssignee = () => {
                   </GridItem>
                   <GridItem width={'1-1'}>
                     <div className='uk-margin-medium-top uk-margin-medium-bottom'>
-                      <label htmlFor='priorities'>Assignee</label>
+                      <label htmlFor='priorities'>
+                        {t('reports.subReports.assignee')}
+                      </label>
                       <SingleSelect
                         multiple={true}
                         items={agents}
@@ -169,7 +174,7 @@ const ReportTicketsByAssignee = () => {
                     <div>
                       <Button
                         disabled={isLoading}
-                        text={'Generate'}
+                        text={t('reports.subReports.generate')}
                         type={'submit'}
                         style={'primary'}
                         waves={true}

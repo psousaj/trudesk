@@ -15,6 +15,7 @@ import SpinLoader from 'components/SpinLoader'
 
 import moment from 'moment-timezone'
 import helpers from 'lib/helpers'
+import { useTranslation } from 'react-i18next'
 
 const ReportTicketsByPriorities = () => {
   const groupsState = useSelector(state => state.groupsState)
@@ -30,6 +31,8 @@ const ReportTicketsByPriorities = () => {
   const [endDate, setEndDate] = useState('')
   const [selectedGroups, setSelectedGroups] = useState([])
   const [selectedPriorities, setSelectedPriorities] = useState([])
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     helpers.UI.inputs()
@@ -96,7 +99,7 @@ const ReportTicketsByPriorities = () => {
         hover={false}
         header={
           <div style={{ padding: '10px 15px' }}>
-            <h4 style={{ width: '100%', textAlign: 'left', fontSize: '14px', margin: 0 }}>Tickets by Priorities</h4>
+            <h4 style={{ width: '100%', textAlign: 'left', fontSize: '14px', margin: 0 }}>{t('reports.reportType.ticketsByPriorities')}</h4>
           </div>
         }
         extraContentClass={'nopadding'}
@@ -104,7 +107,7 @@ const ReportTicketsByPriorities = () => {
           <div>
             <SpinLoader active={isLoading} />
             <p className='padding-15 nomargin uk-text-muted'>
-              Please select the start and end dates and which groups to include in the report.
+              {t('reports.subReports.instructions')}
             </p>
             <hr className='uk-margin-large-bottom' style={{ marginTop: 0 }} />
             <div className={'padding-15'}>
@@ -112,7 +115,7 @@ const ReportTicketsByPriorities = () => {
                 <Grid>
                   <GridItem width={'1-2'}>
                     <label htmlFor='filterDate_Start' className={'uk-form-label nopadding nomargin'}>
-                      Start Date
+                      {t('reports.subReports.startDate')}
                     </label>
                     <DatePicker
                       name={'filterDate_start'}
@@ -125,7 +128,7 @@ const ReportTicketsByPriorities = () => {
                   </GridItem>
                   <GridItem width={'1-2'}>
                     <label htmlFor='filterDate_End' className={'uk-form-label nopadding nomargin'}>
-                      End Date
+                      {t('reports.subreports.endDate')}
                     </label>
                     <DatePicker
                       name={'filterDate_End'}
@@ -139,7 +142,7 @@ const ReportTicketsByPriorities = () => {
                   <GridItem width={'1-1'}>
                     <div className='uk-margin-medium-top uk-margin-medium-bottom'>
                       <label htmlFor='groups' className={'uk-form-label'}>
-                        Groups
+                        {t('reports.subReports.groups')}
                       </label>
                       <SingleSelect
                         multiple={true}
@@ -153,7 +156,7 @@ const ReportTicketsByPriorities = () => {
                   </GridItem>
                   <GridItem width={'1-1'}>
                     <div className='uk-margin-medium-top uk-margin-medium-bottom'>
-                      <label htmlFor='priorities'>Priorities</label>
+                      <label htmlFor='priorities'>{t('reports.subReports.priorities')}</label>
                       <SingleSelect
                         multiple={true}
                         items={priorities}
@@ -168,7 +171,7 @@ const ReportTicketsByPriorities = () => {
                     <div>
                       <Button
                         disabled={isLoading}
-                        text={'Generate'}
+                        text={t('reports.subReports.generate')}
                         type={'submit'}
                         style={'primary'}
                         waves={true}

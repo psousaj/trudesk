@@ -17,34 +17,37 @@ import ReportTicketsByTypes from 'containers/Reports/subreports/ticketsByTypes'
 import ReportTicketsByAssignee from 'containers/Reports/subreports/ticketsByAssignee'
 
 import helpers from 'lib/helpers'
+import { withTranslation } from 'react-i18next'
 
 @observer
 class ReportsContainer extends React.Component {
   @observable selectedReport = ''
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     makeObservable(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     helpers.resizeFullHeight()
   }
 
-  componentDidUpdate (prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     helpers.resizeFullHeight()
   }
 
-  onSelectReportClicked (e, type) {
+  onSelectReportClicked(e, type) {
     e.preventDefault()
     this.selectedReport = type
   }
 
-  render () {
+  render() {
+    const { t } = this.props
+
     return (
       <>
-        <PageTitle title={'Generate Report'} />
+        <PageTitle title={t('reports.title')} />
         <Grid>
           <GridItem width={'1-4'} extraClass={'full-height'}>
             <TruCard
@@ -53,7 +56,7 @@ class ReportsContainer extends React.Component {
               extraContentClass={'nopadding'}
               content={
                 <div>
-                  <h6 style={{ padding: '15px 30px', margin: 0, fontSize: '14px' }}>Select Report</h6>
+                  <h6 style={{ padding: '15px 30px', margin: 0, fontSize: '14px' }}>{t('reports.selectReport')}</h6>
                   <hr className={'nomargin'} />
                   <div style={{ padding: '15px 30px' }}>
                     <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
@@ -63,7 +66,7 @@ class ReportsContainer extends React.Component {
                           className={'no-ajaxy'}
                           onClick={e => this.onSelectReportClicked(e, 'tickets_by_groups')}
                         >
-                          Tickets by Groups
+                          {t('reports.reportType.ticketsByGroup')}
                         </a>
                       </li>
                       <li>
@@ -72,25 +75,25 @@ class ReportsContainer extends React.Component {
                           className={'no-ajaxy'}
                           onClick={e => this.onSelectReportClicked(e, 'tickets_by_priorities')}
                         >
-                          Tickets by Priorities
+                          {t('reports.reportType.ticketsByPriorities')}
                         </a>
                       </li>
-                      <li>
+                      {/* <li>
                         <a
                           href='#'
                           className={'no-ajaxy'}
                           onClick={e => this.onSelectReportClicked(e, 'tickets_by_status')}
                         >
-                          Tickets by Status
+                          {t('reports.reportType.ticketsByStatus')}
                         </a>
-                      </li>
+                      </li> */}
                       <li>
                         <a
                           href='#'
                           className={'no-ajaxy'}
                           onClick={e => this.onSelectReportClicked(e, 'tickets_by_tags')}
                         >
-                          Tickets by Tags
+                          {t('reports.reportType.ticketsByTags')}
                         </a>
                       </li>
                       <li>
@@ -99,7 +102,7 @@ class ReportsContainer extends React.Component {
                           className={'no-ajaxy'}
                           onClick={e => this.onSelectReportClicked(e, 'tickets_by_types')}
                         >
-                          Tickets by Types
+                          {t('reports.reportType.ticketsByTypes')}
                         </a>
                       </li>
                       <li>
@@ -108,7 +111,7 @@ class ReportsContainer extends React.Component {
                           className={'no-ajaxy'}
                           onClick={e => this.onSelectReportClicked(e, 'tickets_by_assignee')}
                         >
-                          Tickets by Assignee
+                          {t('reports.reportType.ticketsByAssignee')}
                         </a>
                       </li>
                     </ul>
@@ -122,7 +125,7 @@ class ReportsContainer extends React.Component {
               <div>
                 {!this.selectedReport && (
                   <h3 className={'uk-text-muted'} style={{ fontWeight: 300, opacity: 0.7 }}>
-                    Please select a report type
+                    {t('reports.nonSelectedReport')}
                   </h3>
                 )}
                 {this.selectedReport === 'tickets_by_groups' && <ReportTicketByGroups />}
@@ -144,4 +147,4 @@ ReportsContainer.propTypes = {}
 
 const mapStateToProps = state => ({})
 
-export default connect(mapStateToProps, {})(ReportsContainer)
+export default connect(mapStateToProps, {})(withTranslation()(ReportsContainer))

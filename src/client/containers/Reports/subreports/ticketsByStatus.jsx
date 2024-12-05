@@ -20,7 +20,7 @@ const ReportTicketsByStatus = () => {
   const statuses = useSelector((state) => state.ticketsState.ticketStatuses)
   const dispatch = useDispatch()
 
-  const mappedStatuses = statuses.map(s => ({text: s.get('name'), value: s.get('uid')}))
+  const mappedStatuses = statuses.map(s => ({ text: s.get('name'), value: s.get('uid') }))
 
   const [groups, setGroups] = useState([])
 
@@ -53,6 +53,12 @@ const ReportTicketsByStatus = () => {
       dispatch(unloadGroups())
     }
   }, [])
+
+  useEffect(() => {
+    console.log("DEBUG GROUPS STATE", {
+      groups: groupsState.groups ? groupsState.groups.toJS() : null
+    });
+  }, [groupsState]);
 
   useEffect(() => {
     helpers.UI.reRenderInputs()
@@ -88,7 +94,7 @@ const ReportTicketsByStatus = () => {
         hover={false}
         header={
           <div style={{ padding: '10px 15px' }}>
-            <h4 style={{ width: '100%', textAlign: 'left', fontSize: '14px', margin: 0 }}>Tickets by Status</h4>
+            <h4 style={{ width: '100%', textAlign: 'left', fontSize: '14px', margin: 0 }}>{t('reports.reportType.ticketsByStatus')}</h4>
           </div>
         }
         extraContentClass={'nopadding'}
