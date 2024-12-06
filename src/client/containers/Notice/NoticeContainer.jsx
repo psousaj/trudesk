@@ -20,25 +20,26 @@ import Button from 'components/Button'
 
 import helpers from 'lib/helpers'
 import UIKit from 'uikit'
+import { withTranslation } from 'react-i18next'
 
 class NoticeContainer extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.fetchNotices()
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     helpers.resizeAll()
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.props.unloadNotices()
   }
 
-  onActivateNotice (noticeId) {
+  onActivateNotice(noticeId) {
     if (!helpers.canUser('notices:activate')) {
       helpers.UI.showSnackbar('Unauthorized', true)
       return
@@ -55,7 +56,7 @@ class NoticeContainer extends React.Component {
       })
   }
 
-  onDeactivateNotice () {
+  onDeactivateNotice() {
     axios
       .get('/api/v1/notices/clearactive')
       .then(() => {
@@ -69,28 +70,30 @@ class NoticeContainer extends React.Component {
       })
   }
 
-  onEditNotice (notice) {
+  onEditNotice(notice) {
     this.props.showModal('EDIT_NOTICE', { notice })
   }
 
-  onDeleteNotice (noticeId) {
+  onDeleteNotice(noticeId, warnings, labels) {
+    console.log(warnings, labels, "DEBGANDO")
     UIKit.modal.confirm(
-      `<h2>Are you sure?</h2>
+      `<h2>${warnings.confirmation}</h2>
         <p style="font-size: 15px;">
-            <span class="uk-text-danger" style="font-size: 15px;">This is a permanent action.</span> 
+            <span class="uk-text-danger" style="font-size: 15px;">${warnings.principal}</span> 
         </p>
         `,
       () => {
         this.props.deleteNotice({ _id: noticeId })
       },
       {
-        labels: { Ok: 'Yes', Cancel: 'No' },
+        labels: { Ok: labels.yes, Cancel: labels.no },
         confirmButtonClass: 'md-btn-danger'
       }
     )
   }
 
-  render () {
+  render() {
+    const { t } = this.props
     const tableItems = this.props.notices.map(notice => {
       const formattedDate =
         helpers.formatDate(notice.get('date'), helpers.getShortDateFormat()) +
@@ -125,7 +128,17 @@ class NoticeContainer extends React.Component {
                 extraClass={'hover-danger'}
                 small={true}
                 waves={true}
-                onClick={() => this.onDeleteNotice(notice.get('_id'))}
+                onClick={() => this.onDeleteNotice(
+                  notice.get('_id'),
+                  {
+                    confirmation: t('notices.deleteNotice.warnings.confirmation'),
+                    principal: t('notices.deleteNotice.warnings.principal'),
+                  },
+                  {
+                    yes: t('notices.deleteNotice.yes'),
+                    no: t('notices.deleteNotice.no')
+                  }
+                )}
               />
             </ButtonGroup>
           </TableCell>
@@ -135,14 +148,14 @@ class NoticeContainer extends React.Component {
     return (
       <div>
         <PageTitle
-          title={'Notices'}
+          title={t('notices.title')}
           shadow={false}
           rightComponent={
             <div className={'uk-grid uk-grid-collapse'}>
               <div className={'uk-width-1-1 mt-15 uk-text-right'}>
                 {helpers.canUser('notices:deactivate') && (
                   <Button
-                    text={'Deactivate'}
+                    text={t('notices.deactivate')}
                     flat={false}
                     small={true}
                     waves={false}
@@ -152,7 +165,7 @@ class NoticeContainer extends React.Component {
                 )}
                 {helpers.canUser('notices:create') && (
                   <Button
-                    text={'Create'}
+                    text={t('notices.create')}
                     flat={false}
                     small={true}
                     waves={false}
@@ -174,16 +187,16 @@ class NoticeContainer extends React.Component {
             striped={true}
             headers={[
               <TableHeader key={0} width={45} height={50} text={''} />,
-              <TableHeader key={1} width={'20%'} text={'Name'} />,
-              <TableHeader key={2} width={'60%'} text={'Message'} />,
-              <TableHeader key={3} width={'10%'} text={'Date'} />,
+              <TableHeader key={1} width={'20%'} text={t('notices.table.name')} />,
+              <TableHeader key={2} width={'60%'} text={t('notices.table.message')} />,
+              <TableHeader key={3} width={'10%'} text={t('notices.table.date')} />,
               <TableHeader key={4} width={150} text={''} />
             ]}
           >
             {!this.props.loading && this.props.notices.size < 1 && (
               <TableRow clickable={false}>
                 <TableCell colSpan={10}>
-                  <h5 style={{ margin: 10 }}>No Notices Found</h5>
+                  <h5 style={{ margin: 10 }}>{t('notices.table.noNotices')}</h5>
                 </TableCell>
               </TableRow>
             )}
@@ -218,4 +231,4 @@ export default connect(mapStateToProps, {
   unloadNotices,
 
   showModal
-})(NoticeContainer)
+})(withTranslation()(NoticeContainer))

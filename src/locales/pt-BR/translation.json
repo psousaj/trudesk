@@ -191,6 +191,25 @@
             "generate": "Gerar"
         }
     },
+    "notices": {
+        "title": "Avisos",
+        "deactivate": "Desativar",
+        "create": "Criar",
+        "table": {
+            "name": "Nome",
+            "message": "Mensagem",
+            "date": "Data",
+            "noNotices": "Nenhum Aviso Encontrado"
+        },
+        "deleteNotice": {
+            "warnings": {
+                "confirmation": "Tem certeza?",
+                "principal": "Esta é uma ação permanente."
+            },
+            "yes": "Sim",
+            "no": "Cancelar"
+        }
+    },
     "sidebar": {
         "tickets": {
             "active": "Ativos",
