@@ -15,6 +15,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { withTranslation } from 'react-i18next'
 
 import { fetchSettings } from 'actions/settings'
 
@@ -35,15 +36,16 @@ import LegalSettingsContainer from 'containers/Settings/Legal'
 import helpers from 'lib/helpers'
 
 class SettingsContainer extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
+    const { t } = this.props
     this.state = {
-      title: 'Settings',
+      title: t('settings.title'),
       activeCategory: 'settings-general'
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const location = window.location.pathname.replace(/^(\/settings(\/?))/, '')
     if (location) {
       this.setState({
@@ -56,7 +58,7 @@ class SettingsContainer extends React.Component {
     helpers.resizeAll()
   }
 
-  onMenuItemClick (e, category) {
+  onMenuItemClick(e, category) {
     if (this.state.activeCategory === 'settings-' + category) return
 
     this.setState(
@@ -69,7 +71,8 @@ class SettingsContainer extends React.Component {
     )
   }
 
-  render () {
+  render() {
+    const { t } = this.props
     return (
       <div className='uk-grid uk-grid-collapse'>
         <div className='uk-width-1-6 uk-width-xLarge-1-10 message-list full-height' data-offset='68'>
@@ -84,70 +87,70 @@ class SettingsContainer extends React.Component {
           <div className='page-content-left noborder full-height'>
             <Menu>
               <MenuItem
-                title='General'
+                title={t('settings.general.title')}
                 active={this.state.activeCategory === 'settings-general'}
                 onClick={e => {
                   this.onMenuItemClick(e, 'general')
                 }}
               />
               <MenuItem
-                title='Accounts'
+                title={t('settings.accounts.title')}
                 active={this.state.activeCategory === 'settings-accounts'}
                 onClick={e => {
                   this.onMenuItemClick(e, 'accounts')
                 }}
               />
               <MenuItem
-                title='Appearance'
+                title={t('settings.appearance.title')}
                 active={this.state.activeCategory === 'settings-appearance'}
                 onClick={e => {
                   this.onMenuItemClick(e, 'appearance')
                 }}
               />
               <MenuItem
-                title='Permissions'
+                title={t('settings.permissions.title')}
                 active={this.state.activeCategory === 'settings-permissions'}
                 onClick={e => {
                   this.onMenuItemClick(e, 'permissions')
                 }}
               />
               <MenuItem
-                title='Tickets'
+                title={t('settings.tickets.title')}
                 active={this.state.activeCategory === 'settings-tickets'}
                 onClick={e => {
                   this.onMenuItemClick(e, 'tickets')
                 }}
               />
               <MenuItem
-                title='Mailer'
+                title={t('settings.mailer.title')}
                 active={this.state.activeCategory === 'settings-mailer'}
                 onClick={e => {
                   this.onMenuItemClick(e, 'mailer')
                 }}
               />
               <MenuItem
-                title={'Elasticsearch'}
+                title={t('settings.elasticSearch.title')}
                 active={this.state.activeCategory === 'settings-elasticsearch'}
                 onClick={e => {
                   this.onMenuItemClick(e, 'elasticsearch')
                 }}
               />
               <MenuItem
-                title='Backup/Restore'
+                title={t('settings.backup.title')}
                 active={this.state.activeCategory === 'settings-backup'}
                 onClick={e => {
                   this.onMenuItemClick(e, 'backup')
                 }}
               />
               <MenuItem
-                title='Server'
+                title={t('settings.server.title')}
                 active={this.state.activeCategory === 'settings-server'}
                 onClick={e => {
                   this.onMenuItemClick(e, 'server')
                 }}
               />
               <MenuItem
-                title='Legal'
+                title={t('settings.legal.title')}
                 active={this.state.activeCategory === 'settings-legal'}
                 onClick={e => {
                   this.onMenuItemClick(e, 'legal')
@@ -190,4 +193,4 @@ const mapStateToProps = state => ({
   sidebar: state.sidebar
 })
 
-export default connect(mapStateToProps, { fetchSettings })(SettingsContainer)
+export default connect(mapStateToProps, { fetchSettings })(withTranslation()(SettingsContainer))

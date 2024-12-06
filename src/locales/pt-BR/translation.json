@@ -210,6 +210,27 @@
             "no": "Cancelar"
         }
     },
+    "settings": {
+        "title": "Configurações",
+        "general": {
+            "title": "Geral",
+            "siteTitle": "Título do Site",
+            "siteTitleSubtitle": "Título do site. Usado como título da página. <i>padrão: Trudesk</i>",
+            "siteUrl": "URL do Site",
+            "siteUrlSubtitle": "URL publicamente acessível deste site.",
+            "timezone": "Fuso Horário do Servidor",
+            "timezoneSubtitle": "Definir o fuso horário local do servidor para exibição de data",
+            "timezoneTooltip": "O usuário pode substituir no perfil do usuário. Requer reinicialização do servidor",
+            "timeDate": "Formato de Data e Hora",
+            "timeDateSubtitle": "Opções de Formato Moment.js",
+            "timeFormat": "Formato de Hora",
+            "timeFormatSubtitle": "Definir o formato para exibição de hora",
+            "shortDateFormat": "Formato de Data Curta",
+            "shortDateFormatSubtitle": "Definir o formato para datas curtas",
+            "longDateFormat": "Formato de Data Longa",
+            "longDateFormatSubtitle": "Definir o formato para datas longas"
+        }
+    },
     "sidebar": {
         "tickets": {
             "active": "Ativos",

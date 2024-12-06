@@ -26,26 +26,27 @@ import EnableSwitch from 'components/Settings/EnableSwitch'
 import SettingSubItem from 'components/Settings/SettingSubItem'
 import Zone from 'components/ZoneBox/zone'
 import ZoneBox from 'components/ZoneBox'
+import { withTranslation } from 'react-i18next'
 
 class GeneralSettings extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
   }
 
-  componentDidMount () {}
-  componentWillUnmount () {}
+  componentDidMount() { }
+  componentWillUnmount() { }
 
-  getSettingsValue (name) {
+  getSettingsValue(name) {
     return this.props.settings.getIn(['settings', name, 'value'])
       ? this.props.settings.getIn(['settings', name, 'value'])
       : ''
   }
 
-  updateSetting (stateName, name, value) {
+  updateSetting(stateName, name, value) {
     this.props.updateSetting({ stateName, name, value })
   }
 
-  getTimezones () {
+  getTimezones() {
     return moment.tz
       .names()
       .map(function (name) {
@@ -62,12 +63,13 @@ class GeneralSettings extends React.Component {
       })
   }
 
-  onTimezoneChange (e) {
+  onTimezoneChange(e) {
     if (e.target.value) this.updateSetting('timezone', 'gen:timezone', e.target.value)
   }
 
-  render () {
+  render() {
     const { active } = this.props
+    const { t } = this.props
 
     const SiteTitle = (
       <InputWithSave
@@ -97,42 +99,42 @@ class GeneralSettings extends React.Component {
     return (
       <div className={active ? 'active' : 'hide'}>
         <SettingItem
-          title='Site Title'
+          title={t('settings.general.siteTitle')}
           subtitle={
             <div>
-              Title of site. Used as page title. <i>default: Trudesk</i>
+              {t('settings.general.siteTitleSubtitle', { default: 'Trudesk' })}
             </div>
           }
           component={SiteTitle}
         />
         <SettingItem
-          title='Site Url'
+          title={t('settings.general.siteUrl')}
           subtitle={
             <div>
-              Publicly accessible URL of this site. <i>ex: {this.props.viewdata.get('hosturl')}</i>
+              {t('settings.general.siteUrlSubtitle')} <i>ex: {this.props.viewdata.get('hosturl')}</i>
             </div>
           }
           component={SiteUrl}
         />
         <SettingItem
-          title='Server Timezone'
-          subtitle='Set the local server timezone for date display'
-          tooltip='User can override in user profile. Requires Server Restart'
+          title={t('settings.general.timezone')}
+          subtitle={t('settings.general.timezoneSubtitle')}
+          tooltip={t('settings.general.timezoneTooltip')}
           component={Timezone}
         />
         <SettingItem
-          title='Time & Date Format'
+          title={t('settings.general.timeDate')}
           subtitle={
             <a href='https://momentjs.com/docs/#/displaying/format/' rel='noopener noreferrer' target='_blank'>
-              Moment.js Format Options
+              {t('settings.general.timeDateSubtitle')}
             </a>
           }
         >
           <Zone>
             <ZoneBox>
               <SettingSubItem
-                title='Time Format'
-                subtitle='Set the format for time display'
+                title={t('settings.general.timeFormat')}
+                subtitle={t('settings.general.timeFormatSubtitle')}
                 component={
                   <InputWithSave
                     stateName='timeFormat'
@@ -145,8 +147,8 @@ class GeneralSettings extends React.Component {
             </ZoneBox>
             <ZoneBox>
               <SettingSubItem
-                title='Short Date Format'
-                subtitle='Set the format for short dates'
+                title={t('settings.general.shortDateFormat')}
+                subtitle={t('settings.general.shortDateFormatSubtitle')}
                 component={
                   <InputWithSave
                     stateName='shortDateFormat'
@@ -159,8 +161,8 @@ class GeneralSettings extends React.Component {
             </ZoneBox>
             <ZoneBox>
               <SettingSubItem
-                title='Long Date Format'
-                subtitle='Set the format for long dates'
+                title={t('settings.general.longDateFormat')}
+                subtitle={t('settings.general.longDateFormatSubtitle')}
                 component={
                   <InputWithSave
                     stateName='longDateFormat'
@@ -190,4 +192,4 @@ const mapStateToProps = state => ({
   settings: state.settings.settings
 })
 
-export default connect(mapStateToProps, { updateSetting })(GeneralSettings)
+export default connect(mapStateToProps, { updateSetting })(withTranslation()(GeneralSettings))
